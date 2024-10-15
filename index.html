@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QReactor - QR Code Generator</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for appealing fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Modal -->
+    <div id="login-modal" class="modal" aria-hidden="false">
+        <div class="modal-content" role="dialog" aria-labelledby="login-title">
+            <h2 id="login-title">Login</h2>
+            <input type="text" id="login-username" placeholder="Username" required aria-label="Username">
+            <input type="password" id="login-password" placeholder="Password" required aria-label="Password">
+            <button id="login-btn">Login</button>
+            <p id="login-error" class="error-message" aria-live="assertive"></p>
+            <p>Don't have an account? <span id="show-signup" tabindex="0">Sign Up</span></p>
+            <p><a href="#" id="forgot-password">Forgot Password?</a></p>
+        </div>
+    </div>
+
+    <!-- Sign-Up Modal -->
+    <div id="signup-modal" class="modal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-labelledby="signup-title">
+            <h2 id="signup-title">Sign Up</h2>
+            <input type="text" id="signup-name" placeholder="Full Name" required aria-label="Full Name">
+            <input type="text" id="signup-username" placeholder="Username" required aria-label="Username">
+            <input type="password" id="signup-password" placeholder="Password" required aria-label="Password">
+            <div id="password-strength">
+                <span>Password Strength: </span><span id="strength-indicator">N/A</span>
+            </div>
+            <button id="signup-btn">Register</button>
+            <p id="signup-error" class="error-message" aria-live="assertive"></p>
+            <p>Already have an account? <span id="show-login" tabindex="0">Login</span></p>
+        </div>
+    </div>
+
+    <!-- Password Recovery Modal -->
+    <div id="recover-modal" class="modal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-labelledby="recover-title">
+            <h2 id="recover-title">Password Recovery</h2>
+            <input type="email" id="recover-email" placeholder="Your Email" required aria-label="Email">
+            <button id="recover-btn">Recover Password</button>
+            <p id="recover-success" class="success-message" aria-live="assertive"></p>
+            <p id="recover-error" class="error-message" aria-live="assertive"></p>
+            <p>Remembered your password? <span id="back-to-login" tabindex="0">Login</span></p>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar" aria-hidden="true">
+        <h3>Settings</h3>
+        <label for="theme">Theme:</label>
+        <select id="theme" aria-label="Theme Selector">
+            <option value="default">Default</option>
+            <option value="light">Light</option>
+            <option value="dark">Dark</option>
+        </select>
+        <hr />
+        <h3>User Profile</h3>
+        <p>Name: <span id="profile-name">John Doe</span></p>
+        <p>Username: <span id="profile-username">johndoe</span></p>
+        <p>QR Code History:</p>
+        <ul id="qr-history">
+            <li>No QR codes generated yet</li>
+        </ul>
+        <button id="export-history">Export History (CSV)</button>
+        <button id="logout">Logout</button>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar" role="navigation" aria-label="Main Navigation">
+        <button id="toggle-sidebar" aria-label="Toggle Menu">&#9776; Menu</button>
+        <button class="nav-button" data-section="home">Home</button>
+        <button class="nav-button" data-section="about-us">About Us</button>
+        <button class="nav-button" data-section="contact-us">Contact Us</button>
+        <button class="nav-button" data-section="admin-dashboard">Admin</button>
+        <button class="nav-button" data-section="faq-section">FAQ</button>
+    </nav>
+
+    <!-- Main content -->
+    <main id="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section">
+            <div class="qr-generator">
+                <h1>Welcome to QReactor</h1>
+                <input type="text" id="qr-input" placeholder="Enter text for QR code" aria-label="QR Code Input">
+                <div class="qr-options">
+                    <label for="qr-color">Choose QR Color:</label>
+                    <input type="color" id="qr-color" value="#000000" aria-label="QR Color Picker">
+
+                    <label for="qr-size">Size:</label>
+                    <select id="qr-size" aria-label="QR Size Selector">
+                        <option value="150">150x150</option>
+                        <option value="200">200x200</option>
+                        <option value="250">250x250</option>
+                        <option value="300">300x300</option>
+                    </select>
+                </div>
+                <button id="generate-qr">Generate QR</button>
+                <div id="qr-container"></div>
+                <button id="download-qr">Download QR</button>
+                <button id="share-qr">Share QR</button>
+                <p id="error-message" class="error-message" aria-live="assertive"></p>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section id="about-us" class="section" style="display: none;">
+            <h2>About Us</h2>
+            <p>QReactor is a professional QR code generator service, offering customizable options for individuals and businesses. Our mission is to make QR code generation seamless and efficient for all your needs.</p>
+        </section>
+
+        <!-- Contact Us Section -->
+        <section id="contact-us" class="section" style="display: none;">
+            <h2>Contact Us</h2>
+            <form id="contact-form" aria-label="Contact Form">
+                <input type="text" id="contact-name" placeholder="Your Name" required aria-label="Your Name">
+                <input type="email" id="contact-email" placeholder="Your Email" required aria-label="Your Email">
+                <textarea id="contact-message" placeholder="Your Message" required aria-label="Your Message"></textarea>
+                <button type="submit">Send Message</button>
+                <p id="contact-success" class="success-message" aria-live="assertive"></p>
+                <p id="contact-error" class="error-message" aria-live="assertive"></p>
+            </form>
+        </section>
+
+        <!-- Admin Dashboard Section -->
+        <section id="admin-dashboard" class="section" style="display: none;">
+            <h2>Admin Dashboard</h2>
+            <h3>Registered Users:</h3>
+            <ul id="user-list">
+                <!-- List of registered users will be dynamically populated -->
+            </ul>
+            <p>Total Users: <span id="total-users">0</span></p>
+            <h3>User Login History</h3>
+            <ul id="login-history">
+                <li>No login history available.</li>
+            </ul>
+            <h3>Contact Us Messages</h3>
+            <ul id="contact-messages">
+                <li>No messages received yet.</li>
+            </ul>
+        </section>
+
+        <!-- FAQ Section -->
+        <section id="faq-section" class="section" style="display: none;">
+            <h2>Frequently Asked Questions</h2>
+            <div class="faq">
+                <h3>What is a QR code?</h3>
+                <p>A QR code is a type of barcode that stores information in a two-dimensional space. It can be scanned using smartphones to quickly access URLs, text, and more.</p>
+            </div>
+            <div class="faq">
+                <h3>Why are QR codes used?</h3>
+                <p>QR codes are used for quick access to information such as websites, contact details, and locations. They are highly efficient for marketing, inventory, and identification purposes.</p>
+            </div>
+            <div class="faq">
+                <h3>How do I create a QR code?</h3>
+                <p>To create a QR code, simply enter the information you want to encode (e.g., a URL, text, or contact information) in the generator, customize the look if desired, and then click "Generate." A QR code will be created instantly.</p>
+            </div>
+            <div class="faq">
+                <h3>How do I scan a QR code?</h3>
+                <p>To scan a QR code, simply open the camera on your smartphone (or use a QR code scanning app). Point the camera at the QR code, and a notification or link will appear for you to tap and view the encoded information.</p>
+            </div>
+            <div class="faq">
+                <h3>What can I store in a QR code?</h3>
+                <p>QR codes can store various types of data, including:</p>
+                <ul>
+                    <li>Website URLs</li>
+                    <li>Contact information (vCards)</li>
+                    <li>Plain text</li>
+                    <li>Wi-Fi network details</li>
+                    <li>Email addresses</li>
+                    <li>Location coordinates</li>
+                    <li>Event details (calendar invites)</li>
+                    <li>Social media links</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
